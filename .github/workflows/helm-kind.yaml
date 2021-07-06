@@ -28,7 +28,6 @@ jobs:
           echo ${{ steps.ip.outputs.ipv6 }}
           
       - name: Configure
-        uses: helm/kind-action@v1.2.0
         run: |
         
           curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
