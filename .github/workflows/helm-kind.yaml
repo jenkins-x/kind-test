@@ -40,6 +40,9 @@ jobs:
           VERSION=$(curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/stable.txt)
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/${VERSION}/deploy/static/provider/kind/deploy.yaml
           kubectl get ns
+          sleep 60
+          kubectl get pods --namespace ingress-nginx   
+          kubectl describe pods --namespace ingress-nginx   
           kubectl wait --namespace ingress-nginx   --for=condition=ready pod   --selector=app.kubernetes.io/component=controller  --timeout=190s
           
           
