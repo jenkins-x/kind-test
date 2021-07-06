@@ -20,7 +20,9 @@ jobs:
 
       - name: Testing
         run: |
-          helm version
+          helm repo add nginx-stable https://helm.nginx.com/stable
+          helm repo update
+          helm install my-release nginx-stable/nginx-ingress
           kubectl cluster-info
           kubectl get pods -n kube-system
           echo "current-context:" $(kubectl config current-context)
@@ -34,8 +36,3 @@ jobs:
         run: |
           echo ${{ steps.ip.outputs.ipv4 }}
           echo ${{ steps.ip.outputs.ipv6 }}
-
-      - name: Lint Helm
-        uses: WyriHaximus/github-action-helm3@v2
-        with:
-          exec: helm repo add nginx-stable https://helm.nginx.com/stable && helm repo update && helm install my-release nginx-stable/nginx-ingress
