@@ -39,6 +39,8 @@ jobs:
         run: |
           docker network inspect -f '{{.IPAM.Config}}' kind
           kubectl get nodes
+
+          kubectl taint nodes chart-testing-control-plane node-role.kubernetes.io/master:NoSchedule- 
           VERSION=$(curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/stable.txt)
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/${VERSION}/deploy/static/provider/kind/deploy.yaml
           kubectl get ns
