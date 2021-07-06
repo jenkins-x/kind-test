@@ -20,6 +20,7 @@ jobs:
 
       - name: Testing
         run: |
+          helm version
           kubectl cluster-info
           kubectl get pods -n kube-system
           echo "current-context:" $(kubectl config current-context)
