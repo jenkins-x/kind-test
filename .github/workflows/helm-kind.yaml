@@ -33,9 +33,6 @@ jobs:
           kind: Cluster
           apiVersion: kind.x-k8s.io/v1alpha4
           nodes:
-          networking:
-            ipFamily: ipv6
-            apiServerAddress: ${{ steps.ip.outputs.ipv4 }}
           - role: control-plane
             kubeadmConfigPatches:
             - |
@@ -50,6 +47,9 @@ jobs:
             - containerPort: 443
               hostPort: 443
               protocol: TCP
+            networking:
+              ipFamily: ipv6
+              apiServerAddress: 127.0.0.1
           EOF
       - name: Testing
         run: |
