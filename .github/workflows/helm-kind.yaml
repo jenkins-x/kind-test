@@ -68,10 +68,10 @@ jobs:
         run: |
           docker network inspect -f '{{.IPAM.Config}}' kind
           kubectl get nodes
-
+          sleep 5
           VERSION=$(curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/stable.txt)
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/${VERSION}/deploy/static/provider/kind/deploy.yaml  
-          kubectl wait --namespace ingress-nginx   --for=condition=ready pod   --selector=app.kubernetes.io/component=controller  --timeout=190s
+          kubectl wait --namespace ingress-nginx   --for=condition=ready pod   --selector=app.kubernetes.io/component=controller  --timeout=90s
           
           
       - name: Curl
