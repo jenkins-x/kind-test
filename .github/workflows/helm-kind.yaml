@@ -15,8 +15,6 @@ jobs:
   create-cluster:
     runs-on: ubuntu-latest
     steps:
-#       - name: Create k8s Kind Cluster
-#         uses: helm/kind-action@v1.2.0
 
       - name: Public IP
         id: ip
@@ -27,7 +25,7 @@ jobs:
           echo ${{ steps.ip.outputs.ipv4 }}
           echo ${{ steps.ip.outputs.ipv6 }}
           
-      - name: Configure
+      - name: Create Kubernetes cluster
         run: |
         
           curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
@@ -56,23 +54,14 @@ jobs:
 
           EOF
 
-      - name: Testing
-        run: |
-          kubectl cluster-info
-          kubectl get pods -n kube-system
-          echo "current-context:" $(kubectl config current-context)
-          echo "environment-kubeconfig:" ${KUBECONFIG}
-          cat ~/.kube/config | true
 
       - name: Install
         run: |
           docker network inspect -f '{{.IPAM.Config}}' kind
-          kubectl get nodes
+
           VERSION=$(curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/stable.txt)
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/${VERSION}/deploy/static/provider/kind/deploy.yaml  
-          sleep 5
-          kubectl get ns
-          kubectl describe pods --namespace ingress-nginx
+          
           kubectl wait --namespace ingress-nginx   --for=condition=ready pod   --selector=app.kubernetes.io/component=controller  --timeout=90s
           
           
