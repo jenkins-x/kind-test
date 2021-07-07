@@ -33,15 +33,9 @@ jobs:
 
           docker run --rm hello-world
     
-          
       - name: Create Kubernetes cluster
         run: |
-        
-          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
-          chmod +x ./kind
-          echo $PATH
-          mkdir -p /home/runner/.local/bin
-          mv ./kind /home/runner/.local/bin/
+          brew install kind
           cat <<EOF | kind create cluster --wait 5m --config=-
           kind: Cluster
           apiVersion: kind.x-k8s.io/v1alpha4
@@ -62,6 +56,35 @@ jobs:
               protocol: TCP
 
           EOF
+
+#       - name: Create Kubernetes cluster
+#         run: |
+        
+#           curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
+#           chmod +x ./kind
+#           echo $PATH
+#           mkdir -p /home/runner/.local/bin
+#           mv ./kind /home/runner/.local/bin/
+#           cat <<EOF | kind create cluster --wait 5m --config=-
+#           kind: Cluster
+#           apiVersion: kind.x-k8s.io/v1alpha4
+#           nodes:
+#           - role: control-plane
+#             kubeadmConfigPatches:
+#             - |
+#               kind: InitConfiguration
+#               nodeRegistration:
+#                 kubeletExtraArgs:
+#                   node-labels: "ingress-ready=true"
+#             extraPortMappings:
+#             - containerPort: 80
+#               hostPort: 80
+#               protocol: TCP
+#             - containerPort: 443
+#               hostPort: 443
+#               protocol: TCP
+
+#           EOF
 
 
 #       - name: Install
