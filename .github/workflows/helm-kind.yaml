@@ -25,41 +25,43 @@ jobs:
           echo ${{ steps.ip.outputs.ipv4 }}
           echo ${{ steps.ip.outputs.ipv6 }}
 
-      - name: jenkins
-        uses: docker://jenkins/jenkins:lts
+      - uses: docker-practice/actions-setup-docker@master
+      - run: |
+          set -x
 
-      - name: start service
-        run: |
-          sudo python3 -m http.server 8080
+          docker version
+
+          docker run --rm hello-world
+    
           
-#       - name: Create Kubernetes cluster
-#         run: |
+      - name: Create Kubernetes cluster
+        run: |
         
-#           curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
-#           chmod +x ./kind
-#           echo $PATH
-#           mkdir -p /home/runner/.local/bin
-#           mv ./kind /home/runner/.local/bin/
-#           cat <<EOF | kind create cluster --wait 5m --config=-
-#           kind: Cluster
-#           apiVersion: kind.x-k8s.io/v1alpha4
-#           nodes:
-#           - role: control-plane
-#             kubeadmConfigPatches:
-#             - |
-#               kind: InitConfiguration
-#               nodeRegistration:
-#                 kubeletExtraArgs:
-#                   node-labels: "ingress-ready=true"
-#             extraPortMappings:
-#             - containerPort: 80
-#               hostPort: 80
-#               protocol: TCP
-#             - containerPort: 443
-#               hostPort: 443
-#               protocol: TCP
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
+          chmod +x ./kind
+          echo $PATH
+          mkdir -p /home/runner/.local/bin
+          mv ./kind /home/runner/.local/bin/
+          cat <<EOF | kind create cluster --wait 5m --config=-
+          kind: Cluster
+          apiVersion: kind.x-k8s.io/v1alpha4
+          nodes:
+          - role: control-plane
+            kubeadmConfigPatches:
+            - |
+              kind: InitConfiguration
+              nodeRegistration:
+                kubeletExtraArgs:
+                  node-labels: "ingress-ready=true"
+            extraPortMappings:
+            - containerPort: 80
+              hostPort: 80
+              protocol: TCP
+            - containerPort: 443
+              hostPort: 443
+              protocol: TCP
 
-#           EOF
+          EOF
 
 
 #       - name: Install
