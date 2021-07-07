@@ -33,7 +33,8 @@ jobs:
       - name: gitea
         run: |
           mkdir gitea
-          cat > gitea/docker-compose.yml <<EOF
+          cd gitea
+          cat > docker-compose.yml <<EOF
           version: "3"
 
           networks:
