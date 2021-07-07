@@ -15,55 +15,81 @@ jobs:
   create-cluster:
     runs-on: macos-latest
     steps:
-
-
-      - name: Public IP
-        id: ip
-        uses: haythem/public-ip@v1.2
-
-      - name: Print Public IP
+      - name: gitea
         run: |
-          echo ${{ steps.ip.outputs.ipv4 }}
-          echo ${{ steps.ip.outputs.ipv6 }}
+          mkdir gitea
+          cat > gitea/docker-compose.yml <<EOF
+          version: "3"
 
-      - name: Create Gitea
-        run: |
-          brew tap gitea/tap https://gitea.com/gitea/homebrew-gitea
-          brew install gitea
-          curl http://localhost:80 | true
-          curl http://localhost:8080 | true
+          networks:
+            gitea:
+              external: false
 
-      - uses: docker-practice/actions-setup-docker@master
-      - run: |
-          set -x
-
-          docker version
-          
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Create Kubernetes cluster
-        run: |
-          brew install kind
-          cat <<EOF | kind create cluster --wait 5m --config=-
-          kind: Cluster
-          apiVersion: kind.x-k8s.io/v1alpha4
-          nodes:
-          - role: control-plane
-            kubeadmConfigPatches:
-            - |
-              kind: InitConfiguration
-              nodeRegistration:
-                kubeletExtraArgs:
-                  node-labels: "ingress-ready=true"
-            extraPortMappings:
-            - containerPort: 80
-              hostPort: 80
-              protocol: TCP
-            - containerPort: 443
-              hostPort: 443
-              protocol: TCP
-
+          services:
+            server:
+              image: gitea/gitea:1.14.4
+              container_name: gitea
+              environment:
+                - USER_UID=1000
+                - USER_GID=1000
+              restart: always
+              networks:
+                - gitea
+              volumes:
+                - ./gitea:/data
+                - /etc/timezone:/etc/timezone:ro
+                - /etc/localtime:/etc/localtime:ro
+              ports:
+                - "3000:3000"
+                - "222:22"
           EOF
+#       - name: Public IP
+#         id: ip
+#         uses: haythem/public-ip@v1.2
+
+#       - name: Print Public IP
+#         run: |
+#           echo ${{ steps.ip.outputs.ipv4 }}
+#           echo ${{ steps.ip.outputs.ipv6 }}
+
+#       - name: Create Gitea
+#         run: |
+#           brew tap gitea/tap https://gitea.com/gitea/homebrew-gitea
+#           brew install gitea
+#           curl http://localhost:80 | true
+#           curl http://localhost:8080 | true
+
+#       - uses: docker-practice/actions-setup-docker@master
+#       - run: |
+#           set -x
+
+#           docker version
+          
+#           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+#       - name: Create Kubernetes cluster
+#         run: |
+#           brew install kind
+#           cat <<EOF | kind create cluster --wait 5m --config=-
+#           kind: Cluster
+#           apiVersion: kind.x-k8s.io/v1alpha4
+#           nodes:
+#           - role: control-plane
+#             kubeadmConfigPatches:
+#             - |
+#               kind: InitConfiguration
+#               nodeRegistration:
+#                 kubeletExtraArgs:
+#                   node-labels: "ingress-ready=true"
+#             extraPortMappings:
+#             - containerPort: 80
+#               hostPort: 80
+#               protocol: TCP
+#             - containerPort: 443
+#               hostPort: 443
+#               protocol: TCP
+
+#           EOF
 
 #       - name: Create Kubernetes cluster
 #         run: |
