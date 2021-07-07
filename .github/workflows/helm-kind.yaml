@@ -16,6 +16,7 @@ jobs:
     runs-on: macos-latest
     steps:
 
+
       - name: Public IP
         id: ip
         uses: haythem/public-ip@v1.2
@@ -24,6 +25,13 @@ jobs:
         run: |
           echo ${{ steps.ip.outputs.ipv4 }}
           echo ${{ steps.ip.outputs.ipv6 }}
+
+      - name: Create Gitea
+        run: |
+          brew tap gitea/tap https://gitea.com/gitea/homebrew-gitea
+          brew install gitea
+          curl http://localhost:80 | true
+          curl http://localhost:8080 | true
 
       - uses: docker-practice/actions-setup-docker@master
       - run: |
