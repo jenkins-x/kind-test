@@ -25,9 +25,13 @@ jobs:
           echo ${{ steps.ip.outputs.ipv4 }}
           echo ${{ steps.ip.outputs.ipv6 }}
 
+      - name: jenkins
+        uses: docker://jenkins
+
       - name: start service
         run: |
-          sudo python -m http.server 80
+          sudo python3 -m http.server 8080
+          
 #       - name: Create Kubernetes cluster
 #         run: |
         
