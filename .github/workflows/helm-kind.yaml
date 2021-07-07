@@ -32,7 +32,11 @@ jobs:
           docker version
 
           docker run --rm hello-world
-    
+
+      - name: Create Kubernetes cluster
+        run: |
+          docker login -u $DOCKER_USERNAME. -p $DOCKER_PASSWORD
+
       - name: Create Kubernetes cluster
         run: |
           brew install kind
