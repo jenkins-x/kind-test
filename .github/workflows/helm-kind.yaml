@@ -26,15 +26,16 @@ jobs:
           echo ${{ steps.ip.outputs.ipv6 }}
 
       - uses: docker-practice/actions-setup-docker@master
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       - run: |
           set -x
 
           docker version
 
           docker run --rm hello-world
-
-      - name: Create Kubernetes cluster
-        run: |
+          
           docker login -u $DOCKER_USERNAME. -p $DOCKER_PASSWORD
 
       - name: Create Kubernetes cluster
