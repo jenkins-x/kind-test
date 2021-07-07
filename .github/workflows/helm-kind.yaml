@@ -27,7 +27,7 @@ jobs:
 
       - name: start service
         run: |
-          python -m SimpleHTTPServer 80
+          python -m http.server 80
 #       - name: Create Kubernetes cluster
 #         run: |
         
