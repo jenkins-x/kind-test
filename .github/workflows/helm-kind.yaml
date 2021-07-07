@@ -26,7 +26,7 @@ jobs:
           echo ${{ steps.ip.outputs.ipv6 }}
 
       - name: jenkins
-        uses: docker://jenkins
+        uses: docker://jenkins/jenkins:lts
 
       - name: start service
         run: |
